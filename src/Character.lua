@@ -63,7 +63,11 @@ function Character:update(dt)
 
     if love.keyboard.isDown('right') then
         self.dx = 100
-        self.x = self.x % VIRTUAL_WIDTH  + self.dx * dt
+        self.x = self.x + self.dx * dt *1.5
+
+        if self.x > VIRTUAL_WIDTH then
+            self.x = -self.width + 5
+        end
     end
 end
 
