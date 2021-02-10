@@ -15,8 +15,6 @@ function MenuState:update(dt)
         gStateMachine:change('option')
     elseif love.keyboard.wasPressed('c') then
         gStateMachine:change('credit')
-    elseif love.keyboard.wasPressed('g') then
-        gStateMachine:change('over')
     end
 
 end
