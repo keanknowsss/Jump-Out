@@ -6,9 +6,7 @@ PlayState = Class{__includes = BaseState}
 function PlayState:init()
     self.character = Character()
 
-    self.paused = false
-
-    self.jump = false
+    self.jump = true
 end
 
 
@@ -16,26 +14,14 @@ end
 function PlayState:update(dt)
     -- terminates the game
     if love.keyboard.wasPressed('escape') then
-        love.event.quit()
+        gStateMachine:change('menu')
     end
 
 
     -- pauses the game
     if self.paused then
         if love.keyboard.wasPressed('p') then
-            self.paused = false
-        else
-            return
-        end
-    elseif love.keyboard.wasPressed('p') then
-        self.paused = true
-        return
-    end
-
-
-    -- checks input before the character jump
-    if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
-        self.jump = true
+            gStateMachine:change('pause')
     end
 
 
