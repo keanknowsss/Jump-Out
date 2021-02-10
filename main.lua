@@ -11,41 +11,20 @@ function love.load()
     math.randomseed(os.time())
 
     love.window.setTitle('Jump Out')
-
-
-
-    -- global table for all the fonts that will be used
-    gFonts = {
-        ['small'] = love.graphics.newFont('fonts/font.ttf', 8)
-    }
-    love.graphics.setFont(gFonts['small'])
-
-
-    -- all the Textures/Graphics that will be used
-    gTextures = {
-        ['character'] = love.graphics.newImage('graphics/boyJump.png'),
-    }
-
-
-    gFrames = {
-        ['boy'] = table.slice(GenerateQuads(gTextures['character'], 63, 44), 3)
-    }
-
-
-    -- global table for all the Sound EFfects/Music that will be used
-    gSounds = {
-
-    }
-
-
     
+    love.graphics.setFont(gFonts['small'])
 
     -- global table for all Game States
     gStateMachine = StateMachine {
         ['play'] = function() return PlayState() end
-
+        ['menu'] = function() return MenuState() end,
+        ['option'] = function() return OptionState() end,
+        ['pause'] = function() return PauseState() end,
+        ['score'] = function() return ScoreState() end,
+        ['credit'] = function() return CreditState() end,
+        ['over'] = function() return OverState() end
     }
-    gStateMachine:change('play')
+    gStateMachine:change('menu')
 
 
 
