@@ -1,7 +1,7 @@
 CreditState = Class{__includes = BaseState}
 
 function CreditState:init()
-
+    
 end
 
 function CreditState:update(dt)

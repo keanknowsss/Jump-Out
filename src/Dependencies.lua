@@ -45,7 +45,7 @@ gTextures = {
 
 
 gFrames = {
-    ['boy'] = table.slice(GenerateQuads(gTextures['character'], 63, 44), 3)
+    ['boy'] = table.slice(GenerateQuads(gTextures['character'], 63, 44))
 }
 
 

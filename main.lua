@@ -1,22 +1,20 @@
 
-
+love.graphics.setDefaultFilter('nearest', 'nearest')
 
 require 'src/Dependencies'
 
 
 function love.load()
-
-    love.graphics.setDefaultFilter('nearest', 'nearest')
-
     math.randomseed(os.time())
 
     love.window.setTitle('Jump Out')
     
     love.graphics.setFont(gFonts['small'])
 
+
     -- global table for all Game States
     gStateMachine = StateMachine {
-        ['play'] = function() return PlayState() end
+        ['play'] = function() return PlayState() end,
         ['menu'] = function() return MenuState() end,
         ['option'] = function() return OptionState() end,
         ['pause'] = function() return PauseState() end,
@@ -42,9 +40,14 @@ end
 
 
 function love.update(dt)
-   gStateMachine:update(dt) 
+    
+    if dt > 0.04 then
+        return
+    end
+        
+    gStateMachine:update(dt) 
 
-   love.keyboard.keysPressed = {}
+    love.keyboard.keysPressed = {}
 end
 
 
@@ -57,7 +60,7 @@ function love.draw()
 
         gStateMachine:render()
 
-        displayFPS()
+        
 
         
 
@@ -90,10 +93,3 @@ end
 
 
 
--- displays FPS to screen
-function displayFPS()
-    love.graphics.setFont(gFonts['small'])
-    love.graphics.setColor(0, 1, 0, 1)
-
-    love.graphics.print('FPS: '.. tostring(love.timer.getFPS()), 5, 5)
-end
