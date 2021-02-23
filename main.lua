@@ -10,6 +10,26 @@ function love.load()
     love.window.setTitle('Jump Out')
     
     love.graphics.setFont(gFonts['small'])
+    
+    --buttons
+    Button_render(190,160,'playb') --1
+    Button_render(10,220,'scoreb') --2
+    Button_render(380,220,'exit') --3
+    Button_render(350,10,'optionb') --4
+    Button_render(350,30,'creditb') --5
+    Button_render(380,200,'back') --6
+    Button_render(300,71,'on') --7
+    Button_render(300,101,'on') --8
+    Button_render(300,131,'on') --9
+    Button_render(350,71,'off') --10
+    Button_render(350,101,'off') --11
+    Button_render(350,131,'off') --12
+    Button_render(350,40,'back') --13
+    Button_render(40,200,'again') --14
+    Button_render(350,200,'menub') --15
+    Button_render(350,100,'resume') --16
+    Button_render(350,150,'menub') --17
+    Button_render(390,5,'pauseb') --18
 
 
     -- global table for all Game States
@@ -29,11 +49,14 @@ function love.load()
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         vsync = true,
         fullscreen = false,
-        resizable = true
+        resizable = false
     })
 
 
     love.keyboard.keysPressed = {}
+    love.mouse.buttons = {}
+    mouseX = nil
+    mouseY = nil
 end
 
 
@@ -48,6 +71,10 @@ function love.update(dt)
     gStateMachine:update(dt) 
 
     love.keyboard.keysPressed = {}
+    
+    x1,y1 = love.mouse.getPosition()
+
+        mouseX, mouseY = push:toGame(x1,y1)
 end
 
 
@@ -68,14 +95,6 @@ function love.draw()
 end
 
 
-
-
-
-function love.resize(w, h)
-    push:resize(w, h)    
-end
-
-
 -- functions used to detect keyboard input
 function love.keypressed(key)
     love.keyboard.keysPressed[key] = true    
@@ -91,5 +110,33 @@ function love.keyboard.wasPressed(key)
     end
 end
 
+function love.mousepressed(x, y, button, istouch, presses)
+    love.mouse.buttons[button] = true
+end
 
+function love.mouse.wasPressed(button)
+    if love.mouse.buttons[button] then
+        return true
+    else
+        return false
+    end
+end
 
+Button = {}
+
+function Button_render(x,y,photo)
+    table.insert(Button,{x=x,y=y,photo=photo})
+end
+
+function Button_draw(i)
+    love.graphics.draw(gButtons[Button[i].photo], Button[i].x,Button[i].y)
+    
+end
+
+function Button_click(x, y, width, height)
+    if mouseX >= x and mouseX <= x + width and mouseY >= y and mouseY <= y + height then
+        return true
+    else
+        return false
+    end
+end
