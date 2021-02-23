@@ -34,10 +34,10 @@ gFonts = {
 
 -- global table for all the backgrounds that will be used
 gBackgrounds = {
-    ['city'] = love.graphics.newImage('backgrounds/city_bg1.png'),
+    ['city'] = love.graphics.newImage('backgrounds/city_bg.png'),
     ['sky'] = love.graphics.newImage('backgrounds/sky_bg.png'),
     ['space'] = love.graphics.newImage('backgrounds/space_bg.png'),
-    ['menubg'] = love.graphics.newImage('backgrounds/city_menu1.png')
+    ['menubg'] = love.graphics.newImage('backgrounds/city_menu.png')
     
 }
 
