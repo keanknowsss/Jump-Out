@@ -12,14 +12,14 @@ end
 
 
 function PlayState:update(dt)
-    -- terminates the game
+    
     if love.keyboard.wasPressed('escape') then
         gStateMachine:change('menu')
     end
 
 
     -- pauses the game
-    if love.keyboard.wasPressed('p') then
+    if Button_click(390,5,25,8) and  love.mouse.wasPressed(1) then
         gStateMachine:change('pause')
     end
 
@@ -36,9 +36,14 @@ end
 
 
 function PlayState:render()
-    love.graphics.draw(gTextures['city'], 0,0, 0, 0.25, 0.25, gTextures['city']:getWidth()/2, VIRTUAL_HEIGHT - 60)
+    love.graphics.draw(gBackgrounds['city'], 0,-2150)
     displayFPS()
     self.character:render()
+    love.graphics.draw(gTextures['pscore'],5,15)
+    Button_draw(18)
+    if Button_click(390,5,25,8) then
+        love.graphics.draw(gSelect['spause'], 389,4)
+    end
 end
 
 
