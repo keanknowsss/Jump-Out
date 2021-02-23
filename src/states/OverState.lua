@@ -5,25 +5,28 @@ function OverState:init()
 end
 
 function OverState:update(dt)
-    if love.keyboard.wasPressed('escape') then
+     if love.keyboard.wasPressed('escape') then
         gStateMachine:change('menu')
-    elseif love.keyboard.wasPressed('a') then
+    end
+    if Button_click(40,200,100,10) and  love.mouse.wasPressed(1) then
         gStateMachine:change('play')
+    elseif Button_click(350,200,40,10) and  love.mouse.wasPressed(1) then
+        gStateMachine:change('menu')
     end
 
 end
 
 function OverState:render()
-
-    love.graphics.setFont(gFonts['huge'])
-    love.graphics.setColor(0, 0, 0, 1)
-    love.graphics.printf('GAME OVER!', 10, 30, VIRTUAL_WIDTH, 'left')
-
-    love.graphics.setFont(gFonts['medium'])
-    love.graphics.setColor(0, 0, 0, 1)
-    love.graphics.printf('Score: ', 0, 100, VIRTUAL_WIDTH, 'center')
-    love.graphics.printf('High Score: ', 0, 130, VIRTUAL_WIDTH, 'center')
-    love.graphics.printf('Play Again (A)', 70, 200, VIRTUAL_WIDTH, 'left')
-    love.graphics.printf('Menu (Esc)', -70, 200, VIRTUAL_WIDTH, 'right')
+    Button_draw(14)
+    Button_draw(15)
+    love.graphics.draw(gTextures['gover'], 10, 30)
+    love.graphics.draw(gTextures['cscore'], 130, 100)
+    love.graphics.draw(gTextures['hscore'], 130, 140)
+    
+    if Button_click(40,200,100,10) then
+        love.graphics.draw(gSelect['sagain'], 39,199)
+    elseif Button_click(350,200,40,10) then
+        love.graphics.draw(gSelect['smenu'], 349,199)
+    end
     
 end
