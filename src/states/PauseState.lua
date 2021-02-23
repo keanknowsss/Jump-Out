@@ -1,28 +1,26 @@
 PauseState = Class{__includes = BaseState}
 
-function PauseState:init()
-
-end
-
 function PauseState:update(dt)
     if love.keyboard.wasPressed('escape') then
         gStateMachine:change('menu')
-    elseif love.keyboard.wasPressed('r') then
-        
+    end
+     if Button_click(350,100,60,10) and  love.mouse.wasPressed(1) then
+        gStateMachine:change('play')
+    elseif Button_click(350,150,40,10) and  love.mouse.wasPressed(1) then
+        gStateMachine:change('menu')
     end
 
 end
 
 function PauseState:render()
-
-    love.graphics.setFont(gFonts['huge'])
-    love.graphics.setColor(0, 0, 0, 1)
-    love.graphics.printf('PAUSED', 0, 5 , VIRTUAL_WIDTH, 'center')
-
-    love.graphics.setFont(gFonts['medium'])
-    love.graphics.setColor(0, 0, 0, 1)
-    love.graphics.printf('JUMP OUT', 60, 70 , VIRTUAL_WIDTH, 'left')
-    love.graphics.printf('Resume (R)', -10, 100, VIRTUAL_WIDTH, 'right')
-    love.graphics.printf('Menu (Esc)', -10, 150, VIRTUAL_WIDTH, 'right')
+    Button_draw(16)
+    Button_draw(17)
+    love.graphics.draw(gTextures['paused'],130,5)
+    love.graphics.draw(gTextures['title2'],60,70)
+    if Button_click(350,100,60,10) then
+        love.graphics.draw(gSelect['sresume'], 349,99)
+    elseif Button_click(350,150,40,10) then
+        love.graphics.draw(gSelect['smenu'], 349,149)
+    end
     
 end
