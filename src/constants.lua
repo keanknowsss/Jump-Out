@@ -6,4 +6,7 @@ WINDOW_HEIGHT = 720
 VIRTUAL_WIDTH = 432
 VIRTUAL_HEIGHT = 243
 
+bgMenuScroll = 0
+bgMenuScroll_Speed = 40
+bgMenuLooping = 1400
 
