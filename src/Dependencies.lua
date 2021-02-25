@@ -8,12 +8,15 @@ push = require 'lib/push'
 
 require 'src/constants'
 require 'src/StateMachines'
+require 'src/Animation'
 
 
 -- assets
 
 require 'src/Util'
 require 'src/Character'
+require 'src/Platform'
+
 
 -- initiates all State classes
 require 'src/states/BaseState'
@@ -76,8 +79,7 @@ gSelect = {
 
 -- all the Textures/Graphics that will be used
 gTextures = {
-    ['character'] = love.graphics.newImage('graphics/boyJump.png'),
-    ['glogo'] = love.graphics.newImage('graphics/gamelab.png')
+    ['glogo'] = love.graphics.newImage('graphics/gamelab.png'),
     ['jlogo'] = love.graphics.newImage('graphics/logo1.png'),
     ['paused'] = love.graphics.newImage('graphics/Title/paused.png'),
     ['title'] = love.graphics.newImage('graphics/Title/TITLE.png'),
@@ -89,16 +91,23 @@ gTextures = {
     ['pscore'] = love.graphics.newImage('graphics/Title/pscore.png'),
     ['sound'] = love.graphics.newImage('graphics/Title/sound.png'),
     ['gover'] = love.graphics.newImage('graphics/Title/gover.png'),
-    ['hstable'] = love.graphics.newImage('graphics/hstable.png')
+
+    ['platforms'] = love.graphics.newImage('graphics/Platform/Platform_Sheet.png'),
+    ['character'] = love.graphics.newImage('graphics/Character/boyJump.png'),
+
+    -- ['hstable'] = love.graphics.newImage('graphics/hstable.png')
 }
 
 
 gFrames = {
-    ['boy'] = table.slice(GenerateQuads(gTextures['character'], 63, 44))
+    ['boy'] = GenerateQuads(gTextures['character'], 63, 44),
+    ['platforms'] = GenerateQuads(gTextures['platforms'], 16, 48)
 }
 
 
 -- global table for all the Sound EFfects/Music that will be used
 gSounds = {
-
+    ['bgMenu'] = love.audio.newSource('bgmusics/menubg.mp3', 'static'),
+    ['bgCity'] = love.audio.newSource('bgmusics/citybg.mp3', 'static'),
+    ['bgSpace'] = love.audio.newSource('bgmusics/spacebg.mp3', 'static')
 }

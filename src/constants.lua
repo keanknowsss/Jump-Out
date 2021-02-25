@@ -8,5 +8,9 @@ VIRTUAL_HEIGHT = 243
 
 bgMenuScroll = 0
 bgMenuScroll_Speed = 40
-bgMenuLooping = 1400
+bgMenuLooping = 1624
 
+
+CAMERA_SCROLL_SPEED = 40
+
+GRAVITY = 7

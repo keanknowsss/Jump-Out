@@ -1,5 +1,11 @@
 MenuState = Class{__includes = BaseState}
 
+
+function MenuState:enter(params)
+
+    gSounds['bgMenu']:play()
+end
+
 function MenuState:update(dt)
      bgMenuScroll = (bgMenuScroll + bgMenuScroll_Speed * dt) % bgMenuLooping
     

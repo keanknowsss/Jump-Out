@@ -4,6 +4,9 @@ love.graphics.setDefaultFilter('nearest', 'nearest')
 require 'src/Dependencies'
 
 
+
+
+
 function love.load()
     math.randomseed(os.time())
 
@@ -51,12 +54,18 @@ function love.load()
         fullscreen = false,
         resizable = false
     })
+    
+    MASTER_VOLUME = 5
+    
 
+    gSounds['bgMenu']:setLooping(true)
+    gSounds['bgMenu']:setVolume(MASTER_VOLUME)
+    gSounds['bgMenu']:play()
 
     love.keyboard.keysPressed = {}
     love.mouse.buttons = {}
-    mouseX = nil
-    mouseY = nil
+    mouseX = 0
+    mouseY = 0
 end
 
 
@@ -71,8 +80,10 @@ function love.update(dt)
     gStateMachine:update(dt) 
 
     love.keyboard.keysPressed = {}
+    love.mouse.buttons = {}
+
     
-    x1,y1 = love.mouse.getPosition()
+    x1,y1 = love.mouse:getPosition()
 
         mouseX, mouseY = push:toGame(x1,y1)
 end
@@ -83,12 +94,11 @@ function love.draw()
 
     push:apply('start')
 
-        love.graphics.clear(40/255, 45/255, 52/255, 255/255)
+        -- love.graphics.clear(40/255, 45/255, 52/255, 255/255)
 
         gStateMachine:render()
 
         
-
         
 
     push:apply('end')
