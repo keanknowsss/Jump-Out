@@ -4,28 +4,27 @@ MenuState = Class{__includes = BaseState}
 function MenuState:enter(params)
 
     gSounds['bgMenu']:play()
+    self.highScores = params.highScores
 end
 
 function MenuState:update(dt)
      bgMenuScroll = (bgMenuScroll + bgMenuScroll_Speed * dt) % bgMenuLooping
     
     if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
-        gStateMachine:change('play')
+        gStateMachine:change('play',{highScores = self.highScores})
     elseif love.keyboard.wasPressed('escape') then
         love.event.quit()
-    elseif love.keyboard.wasPressed('o') then
-        gStateMachine:change('over')
     end
     if Button_click(190,160,64,17) and  love.mouse.wasPressed(1) then
-        gStateMachine:change('play')
+        gStateMachine:change('play',{highScores = self.highScores})
     elseif Button_click(10,220,100,10) and  love.mouse.wasPressed(1) then
-        gStateMachine:change('scores')
+        gStateMachine:change('scores',{highScores = self.highScores})
     elseif Button_click(380,220,40,10) and  love.mouse.wasPressed(1) then
         love.event.quit()
     elseif Button_click(350,10,70,10) and  love.mouse.wasPressed(1) then
-        gStateMachine:change('option')
+        gStateMachine:change('option',{highScores = self.highScores})
     elseif Button_click(350,30,70,10) and  love.mouse.wasPressed(1) then
-        gStateMachine:change('credit')
+        gStateMachine:change('credit',{highScores = self.highScores})
 
     end
 
