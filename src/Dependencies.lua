@@ -95,7 +95,7 @@ gTextures = {
     ['platforms'] = love.graphics.newImage('graphics/Platform/Platform_Sheet.png'),
     ['character'] = love.graphics.newImage('graphics/Character/boyJump.png'),
 
-    -- ['hstable'] = love.graphics.newImage('graphics/hstable.png')
+    ['hstable'] = love.graphics.newImage('graphics/hstable.png')
 }
 
 
