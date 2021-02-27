@@ -2,7 +2,7 @@
 -- instantiate all library classes
 Class = require 'lib/class'
 push = require 'lib/push'
-
+Timer = require 'lib/knife.timer'
 
 -- initiates all Source Class
 
@@ -16,6 +16,13 @@ require 'src/Animation'
 require 'src/Util'
 require 'src/Character'
 require 'src/Platform'
+require 'src/Enemy'
+
+
+-- powerups
+require 'src/Spring'
+require 'src/Shield'
+
 
 
 -- initiates all State classes
@@ -37,9 +44,9 @@ gFonts = {
 
 -- global table for all the backgrounds that will be used
 gBackgrounds = {
-    ['city'] = love.graphics.newImage('backgrounds/city_bg.png'),
-    ['sky'] = love.graphics.newImage('backgrounds/sky_bg.png'),
-    ['space'] = love.graphics.newImage('backgrounds/space_bg.png'),
+    [1] = love.graphics.newImage('backgrounds/city_bg.png'), -- city
+    [2] = love.graphics.newImage('backgrounds/sky_bg.png'), -- sky
+    [3] = love.graphics.newImage('backgrounds/space_bg.png'), -- space
     ['menubg'] = love.graphics.newImage('backgrounds/city_menu.png')
     
 }
@@ -94,6 +101,23 @@ gTextures = {
 
     ['platforms'] = love.graphics.newImage('graphics/Platform/Platform_Sheet.png'),
     ['character'] = love.graphics.newImage('graphics/Character/boyJump.png'),
+    ['character-gun'] = love.graphics.newImage('graphics/Character/boyshoot1-Sheet.png'),
+
+
+    ['ship'] = love.graphics.newImage('graphics/Enemy/spaceship_enemy.png'),    -- ship
+    ['enemy1'] = love.graphics.newImage('graphics/Enemy/Enemy(Aliens Big).png'),    -- alien 1
+    ['enemy2'] = love.graphics.newImage('graphics/Enemy/Enemy(Aliens Big1).png'),   -- alien 2
+    ['enemy3'] = love.graphics.newImage('graphics/Enemy/Enemy(Aliens Small).png'), -- alien 3
+    ['enemy4'] = love.graphics.newImage('graphics/Enemy/Enemy(Jet Small).png'), -- alien 4    
+
+
+    ['spring'] = love.graphics.newImage('graphics/Powerup/Powerup(Spring)).png'),
+    ['jetpack'] = love.graphics.newImage('graphics/Powerup/Jetpack(Powerup).png'),
+    ['rocket'] = love.graphics.newImage('graphics/Powerup/rocket_powerup.png'),
+    ['bubble'] = love.graphics.newImage('graphics/Powerup/shield bubble.png'),
+    ['shield'] = love.graphics.newImage('graphics/Powerup/shield.png'),
+
+
 
     ['hstable'] = love.graphics.newImage('graphics/hstable.png')
 }
@@ -101,8 +125,17 @@ gTextures = {
 
 gFrames = {
     ['boy'] = GenerateQuads(gTextures['character'], 63, 44),
-    ['platforms'] = GenerateQuads(gTextures['platforms'], 16, 48)
+    ['shoot'] = GenerateQuads(gTextures['character-gun'], 63, 44),
+    ['platforms'] = GenerateQuads(gTextures['platforms'], 16, 48),
+    ['enemy1'] = GenerateQuads(gTextures['enemy1'], 32, 32),
+    ['enemy2'] = GenerateQuads(gTextures['enemy2'], 32, 32),
+    ['enemy3'] = GenerateQuads(gTextures['enemy3'], 20, 32),
+    ['enemy4'] = GenerateQuads(gTextures['enemy4'], 16, 32),
+
+    ['spring'] = table.slice(GenerateQuads(gTextures['spring'], 16, 16), 15)
 }
+
+
 
 
 -- global table for all the Sound EFfects/Music that will be used
