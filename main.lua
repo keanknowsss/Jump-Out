@@ -43,9 +43,10 @@ function love.load()
         ['pause'] = function() return PauseState() end,
         ['score'] = function() return ScoreState() end,
         ['credit'] = function() return CreditState() end,
-        ['over'] = function() return OverState() end
+        ['over'] = function() return OverState() end,
+        ['gover'] = function() return GOverState() end
     }
-    gStateMachine:change('menu')
+    gStateMachine:change('menu',{highScores = loadHighScores()})
 
 
 
@@ -66,6 +67,10 @@ function love.load()
     love.mouse.buttons = {}
     mouseX = 0
     mouseY = 0
+    
+    music = true
+    direcshooting = true
+    sounds = true
 end
 
 
@@ -146,3 +151,52 @@ function Button_click(x, y, width, height)
         return false
     end
 end
+
+function loadHighScores()
+    love.filesystem.setIdentity('scoretable')
+
+    -- if the file info is nil, initialize it with some default scores
+    if not love.filesystem.exists('scoretable.lst') then
+        local scores = ''
+        for i = 10, 1, -1 do
+            scores = scores .. 'GameLab\n'
+            scores = scores .. tostring(i * 100) .. '\n'
+        end
+
+        love.filesystem.write('scoretable.lst', scores)
+    end
+
+    -- flag for whether we're reading a name or not
+    local name = true
+    local currentName = nil
+    local counter = 1
+
+    -- initialize scores table with at least 10 blank entries
+    local scores = {}
+
+    for i = 1, 10 do
+        -- blank table; each will hold a name and a score
+        scores[i] = {
+            name = nil,
+            score = nil
+        }
+    end
+
+    -- iterate over each line in the file, filling in names and scores
+    for line in love.filesystem.lines('scoretable.lst') do
+        if name then
+            scores[counter].name = string.sub(line,1,7)
+        else
+            scores[counter].score = tonumber(line)
+            counter = counter + 1
+        end
+
+        -- flip the name flag
+        name = not name
+    end
+
+    return scores
+
+    
+end
+

@@ -34,12 +34,14 @@ require 'src/states/CreditState'
 require 'src/states/OverState'
 require 'src/states/PauseState'
 require 'src/states/ScoreState'
+require 'src/states/GOverState'
 
 -- global table for all the fonts that will be used
 gFonts = {
     ['small'] = love.graphics.newFont('fonts/font.ttf', 8),
-    ['medium'] = love.graphics.newFont('fonts/font.ttf', 16),
-    ['huge'] = love.graphics.newFont('fonts/font.ttf', 32)
+    ['medium'] = love.graphics.newFont('fonts/font.ttf', 10),
+    ['score'] = love.graphics.newFont('fonts/font1.ttf', 6),
+    ['huge'] = love.graphics.newFont('fonts/title.ttf', 32)
 }
 
 -- global table for all the backgrounds that will be used
@@ -93,6 +95,7 @@ gTextures = {
     ['title2'] = love.graphics.newImage('graphics/Title/TITLE2.png'),
     ['cscore'] = love.graphics.newImage('graphics/Title/cscore.png'),
     ['dshooting'] = love.graphics.newImage('graphics/Title/dshooting.png'),
+    ['name'] = love.graphics.newImage('graphics/Title/name.png'),
     ['hscore'] = love.graphics.newImage('graphics/Title/hscore.png'),
     ['music'] = love.graphics.newImage('graphics/Title/music.png'),
     ['pscore'] = love.graphics.newImage('graphics/Title/pscore.png'),

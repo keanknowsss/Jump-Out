@@ -1,6 +1,12 @@
 
 
+
+
 PlayState = Class{__includes = BaseState}
+
+function PlayState:enter(params)
+    self.highScores = params.highScores
+end
 
 function PlayState:init()
     -- instantiate the character
@@ -50,7 +56,7 @@ function PlayState:init()
     gSounds['bgCity']:setVolume(MASTER_VOLUME)
     gSounds['bgCity']:play()
 
-
+    love.paused = false
 end
 
 
@@ -58,19 +64,55 @@ end
 function PlayState:update(dt)
 
     -- PAUSE FEATURE
-    -- for debug 
     if love.paused then
-        if love.keyboard.wasPressed('p') then
+        --gSounds['bgCity']:pause()
+        if  Button_click(350,100,60,10) and  love.mouse.wasPressed(1) then
+            if music then
+                gSounds['bgMenu']:stop()
+                gSounds['bgCity']:play()
+            else
+                gSounds['bgCity']:stop()
+            end
             love.paused = false
+        elseif Button_click(350,150,40,10) and  love.mouse.wasPressed(1) then
+            if music then
+                gSounds['bgCity']:stop()
+                gSounds['bgMenu']:setLooping(true)
+                gSounds['bgMenu']:play()
+            else
+                gSounds['bgMenu']:stop()
+            end
+            gStateMachine:change('menu',{highScores = self.highScores})
         else
             return
         end
     else
-        if love.keyboard.wasPressed('p') then
+        if Button_click(390,5,25,8) and  love.mouse.wasPressed(1) then
+            gSounds['bgCity']:pause()
             love.paused = true
-        end
+        end 
     end
+
     
+    if love.keyboard.wasPressed('escape') then
+        if music then
+            gSounds['bgCity']:stop()
+            gSounds['bgMenu']:setLooping(true)
+            gSounds['bgMenu']:play()
+        else
+            gSounds['bgMenu']:stop()
+        end
+        gStateMachine:change('menu',{highScores = self.highScores})
+    end
+
+    if music then
+        gSounds['bgMenu']:stop()
+        gSounds['bgCity']:play()
+    else
+        gSounds['bgCity']:stop()
+    end
+
+
     self.character:update(dt)
 
     -- ENEMY SPAWN
@@ -122,7 +164,7 @@ function PlayState:update(dt)
         if self.character.dy > 0 then
             self.springPowerup = false
             self.character.jumpSpeed = -205
-            self.bgScroller = 60
+            self.bgScroller = 10
 
 
             for k, platform in pairs(self.platforms) do
@@ -136,7 +178,6 @@ function PlayState:update(dt)
 
 
     end
-
 
 
 
@@ -169,7 +210,7 @@ function PlayState:update(dt)
                                 platformDy.spring.dy = 300 
                             end
                         end
-                        self.bgScroller = 100
+                        self.bgScroller = 60
                     end
                 end
 
@@ -279,11 +320,39 @@ function PlayState:update(dt)
         end     
     else
         if self.character.y > VIRTUAL_HEIGHT + self.character.height then
-            love.audio.stop()
-            gSounds['bgMenu']:setLooping(true)
-            gSounds['bgMenu']:play()
-            gStateMachine:change('menu')
-        end   
+            local highScore = false
+        
+            -- keep track of what high score ours overwrites, if any
+            local scoreIndex = 11
+
+            for i = 10, 1, -1 do
+                local score = self.highScores[i].score or 0
+                if self.score > score then
+                    highScoreIndex = i
+                    highScore = true
+                end
+            end
+
+            if highScore then
+                if music then
+                    gSounds['bgCity']:stop()
+                    gSounds['bgMenu']:setLooping(true)
+                    gSounds['bgMenu']:play()
+                else
+                    gSounds['bgMenu']:stop()
+                end
+            gStateMachine:change('over', {
+                highScores = self.highScores,
+                score = self.score,
+                scoreIndex = highScoreIndex
+            }) 
+            else 
+                gStateMachine:change('gover', {
+                    highScores = self.highScores,
+                    score = self.score
+                }) 
+            end   
+        end
     end
 
 
@@ -306,17 +375,7 @@ function PlayState:update(dt)
     end
 
 
-    if love.keyboard.wasPressed('escape') then
-        love.audio.stop()
-        gSounds['bgMenu']:setLooping(true)
-        gSounds['bgMenu']:play()
-        gStateMachine:change('menu')
-    end
 
-    -- pauses the game
-    if Button_click(390,5,25,8) and  love.mouse.wasPressed(1) then
-        gStateMachine:change('pause')
-    end
 
 end
 
@@ -359,10 +418,25 @@ function PlayState:render()
     love.graphics.draw(gTextures['pscore'],5,15)
     love.graphics.print(tostring(self.score), 55, 20)
 
-    Button_draw(18)
-    if Button_click(390,5,25,8) then
-        love.graphics.draw(gSelect['spause'], 389,4)
+    if love.paused then
+        Button_draw(16)
+        Button_draw(17)
+        love.graphics.draw(gTextures['paused'],130,5)
+        love.graphics.draw(gTextures['title2'],60,70)
+        love.graphics.draw(gTextures['jlogo'], 68,110)
+        if Button_click(350,100,60,10) then
+            love.graphics.draw(gSelect['sresume'], 349,99)
+        elseif Button_click(350,150,40,10) then
+            love.graphics.draw(gSelect['smenu'], 349,149)
+        end
+    else
+        Button_draw(18)
+        if Button_click(390,5,25,8) then
+            love.graphics.draw(gSelect['spause'], 389,4)
+        end
     end
+
+    
 
 
 
@@ -451,7 +525,7 @@ function PlayState:createNewPlatforms()
     -- when spring is activated
     tempDy = self.springPowerup == true and 300 or 100
 
-    self.platformY = math.max(5, self.platformY + self.spacing)--10--math.random(-5, -10)
+    self.platformY = math.max(5, self.platformY + self.spacing)
     self.platformlastX = math.max(-50, 
         math.min(VIRTUAL_WIDTH - 50, 
             self.platformlastX + (math.random(2) == 1 and math.random(100,120) or math.random(-100,-120))))
@@ -466,7 +540,7 @@ end
 function PlayState:spawnEnemy()
     
     if #self.enemy < 1 then
-        table.insert(self.enemy, Enemy(4))
+        table.insert(self.enemy, Enemy(math.random(5)))
     end
 
 end

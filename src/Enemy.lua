@@ -34,6 +34,7 @@ function Enemy:init(enemy)
     self.dy = 30
 
     self.x = 0
+    self.y = 0
     
 
     
@@ -129,7 +130,6 @@ function Enemy:init(enemy)
 
     self.currentAnimation = self.idleAnimation
 
-    self.y = 150
     
 
     self.remove = false

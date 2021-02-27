@@ -133,6 +133,6 @@ function Platform:chanceSpring()
         return true
     end
 
-    return true
+    return false
 end
 
