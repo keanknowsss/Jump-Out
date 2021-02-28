@@ -138,6 +138,13 @@ function PlayState:update(dt)
     end
 
 
+    if self.character.y < VIRTUAL_HEIGHT / 4 then
+        GRAVITY = 170
+    else
+        GRAVITY = 7
+    end
+    
+
     --POWERUPS
 
     -- spring update

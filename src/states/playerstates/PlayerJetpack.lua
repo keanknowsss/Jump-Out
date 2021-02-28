@@ -12,7 +12,7 @@ function PlayerJetpack:init(x,y)
 
 
     self.dy = -120
-    self.speed = 300
+    self.speed = 400
 
     self.xscale = 1
     self.yscale = 1
