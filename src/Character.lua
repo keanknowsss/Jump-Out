@@ -4,7 +4,7 @@ Character = Class{}
 
 function Character:init()
     self.height = 63
-    self.width = 44
+    self.width = 43
 
     -- flag for when the game is starting
     self.inPlay = false
@@ -14,7 +14,7 @@ function Character:init()
 
     self.dy = 0
 
-
+    self.inGame = false
     -- for the x velocity
     self.speed = 130
 
@@ -25,6 +25,9 @@ function Character:init()
 
     self.xscale = 1
     self.yscale = 1
+
+
+    self.bullet = {}
     
 
     self.initializeJumpAni = Animation {
@@ -35,6 +38,12 @@ function Character:init()
         frames = {4, 5, 6, 7, 8, 9, 10, 11},
         interval = 0.1
     }
+
+    self.shootAnimation = Animation {
+        frames = {13, 14, 15, 16, 17, 18, 19, 21},
+        interval = 0.1
+    }
+
     self.currentAnimation = self.initializeJumpAni
 
     self.scoreCounterY1 = self.y
@@ -51,8 +60,15 @@ end
 
 function Character:update(dt)
 
+
+    self.currentAnimation:update(dt)
+
+    if self.inGame then
+        
     -- temporary scoring at the beginning of the game
-    if self.dy == 0 then
+    if self.dy == 0 then                        
+        gSounds['jump']:stop()
+        gSounds['jump']:play()
         self.scoreCounterY2 = self.y
         if self.scoreCounterY2 > self.scoreCounterY1 then
             self.score1 = self.scoreCounterY2 - self.scoreCounterY1
@@ -92,13 +108,12 @@ function Character:update(dt)
     end
 
 
-    self.currentAnimation:update(dt)
 
 
 
     -- limits the movement to avoid character continously moving upward bug
     if self.y < 30 then
-        GRAVITY = 100
+        GRAVITY = 120
     else
         GRAVITY = 7
     end
@@ -132,18 +147,43 @@ function Character:update(dt)
             self.x = -self.width + 20
         end
     else
-        self.currentAnimation = self.jumpAnimation
+        -- self.currentAnimation = self.jumpAnimation
+    end
+
+
+    if love.keyboard.wasPressed('space') then
+        self.currentAnimation = self.shootAnimation
+
+        gSounds['shoot']:stop()
+        gSounds['shoot']:play()
+        table.insert(self.bullet, Bullet(self.x - self.width/2, self.y - 15, self.direction))
+    end
+
+
+    if self.bullet then
+        for k, bullet in pairs(self.bullet) do
+            bullet:update(dt)
+        end
+    end
+
     end
 
 end
 
 
 function Character:render()
-    love.graphics.draw(gTextures['character'], 
+    love.graphics.draw(gTextures['sprites'], 
         gFrames['boy'][self.currentAnimation:getCurrentFrame()], 
         math.floor(self.x) - self.width/2, math.floor(self.y) - self.height/2, 
         0, 
         self.direction == 'left' and -1 or 1, self.yscale, self.width/2, self.height/2)
+
+
+    if self.bullet then
+        for k, bullet in pairs(self.bullet) do
+            bullet:render()
+        end
+    end
 end
 
 
@@ -158,7 +198,7 @@ function Character:collidesPlatform(target)
 
     -- then check to see if the bottom edge of either is higher than the top
     -- edge of the other
-    if self.y > target.y + target.height - 5 or target.y - 100 > self.y + self.height then
+    if self.y > target.y + target.height + 10 or target.y - 100 > self.y + self.height then
         return false
     end 
 
@@ -188,13 +228,13 @@ end
 function Character:collides(target)
     -- first, check to see if the left edge of either is farther to the right
     -- than the right edge of the other
-    if self.x - self.width > target.x + target.width or target.x > self.x then
+    if self.x - self.width > target.x + target.width - 20 or target.x > self.x then
         return false
     end
 
     -- then check to see if the bottom edge of either is higher than the top
     -- edge of the other
-    if self.y - self.height / 2 + 5 > target.y + target.height or target.y + 20 > self.y then
+    if self.y  > target.y + target.height + 40 or target.y > self.y then
         return false
     end 
 
@@ -231,10 +271,31 @@ function Character:collidesPowerup(target)
 
     -- then check to see if the bottom edge of either is higher than the top
     -- edge of the other
-    if self.y > target.y + target.height or target.y + self.height> self.y + self.height then
+    if self.y > target.y + target.width - 10 or target.y + self.height > self.y + self.height then
         return false
     end 
 
     -- if the above aren't true, they're overlapping
     return true
+end
+
+
+
+
+function Character:collidesPowerup2(target)
+    -- first, check to see if the left edge of either is farther to the right
+    -- than the right edge of the other
+    if self.x - self.width > target.x + target.width or target.x + self.width + 10  > self.x + self.width then
+        return false
+    end
+
+    -- then check to see if the bottom edge of either is higher than the top
+    -- edge of the other
+    if self.y > target.y + target.height + self.height - 5 or target.y + self.height + 5> self.y + self.height then
+        return false
+    end 
+
+    -- if the above aren't true, they're overlapping
+    return true
+    
 end

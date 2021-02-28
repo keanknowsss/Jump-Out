@@ -35,24 +35,58 @@ function Platform:init(x, y, platform, dy, powerup)
 
     self.dy = dy or 100
 
+    self.powerup = powerup
 
     -- randomizes the spawning of the spring
-    if self:chanceSpring() then
-        self.spring = Spring(math.random(self.x, self.x + self.width - 16), self.y - 20)
-        self.spring.dy = self.dy
-    else
-        self.spring = nil
+    if self.powerup == 1 then
+        if self:chanceSpring() then
+            self.spring = Spring(math.random(self.x, self.x + self.width - 16), self.y - 20)
+            self.spring.dy = self.dy
+            self.shield = nil
+            self.jetpack = nil
+        else
+            self.spring = nil
+        end        
+    elseif self.powerup == 2 then
+        if self:chanceShield() then
+            self.shield = Shield(math.random(self.x, self.x + self.width - 11), self.y - 32)
+            self.spring = nil
+            self.jetpack = nil
+        else
+            self.shield = nil
+        end
+    elseif self.powerup == 3 then
+        if self:chanceJet() then
+            self.jetpack = Jetpack(math.random(self.x, self.x + self.width - 32), self.y - 32)
+            self.spring = nil
+            self.shield = nil
+        else
+            self.jetpack = nil   
+        end
     end
+
 
     
     -- moving platforms is given a dx value
     if self.platform == 2 then
+        self.spring = nil
+        self.shield = nil
+        self.jetpack = nil   
+
         self.dx = 100
     elseif self.platform == 3 then
+        self.spring = nil
+        self.shield = nil
+        self.jetpack = nil   
+
         self.dx = -100
 
     -- last platform is being inverted in some cases
     elseif self.platform == 8 then
+        self.spring = nil
+        self.shield = nil
+        self.jetpack = nil   
+
         self.dx = -80
         self.scaleX = math.random(2) == 1 and -2 or 2
         self.height = 12
@@ -85,6 +119,11 @@ function Platform:update(dt)
 
     if self.spring then
         self.spring:update(dt)        
+
+    elseif self.shield then
+        self.shield:update(dt)
+    elseif self.jetpack then
+        self.jetpack:update(dt)
     end
 end
 
@@ -103,8 +142,12 @@ function Platform:render()
 
     if self.spring then
         self.spring:render()
-    end
 
+    elseif self.shield then
+        self.shield:render()
+    elseif self.jetpack then
+        self.jetpack:render()        
+    end
 end
 
 
@@ -129,10 +172,20 @@ end
 function Platform:chanceSpring()
     local in1 = math.random(5)
 
-    if in1 == 1 then
-        return true
-    end
-
-    return false
+    return in1 == 1
 end
 
+
+
+function Platform:chanceShield()
+    local in1 = math.random(9)
+
+    return in1 == 1
+end
+
+
+function Platform:chanceJet()
+    local in1 =  math.random(12)
+
+    return in1 == 1
+end

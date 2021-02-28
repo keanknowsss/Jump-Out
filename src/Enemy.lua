@@ -100,7 +100,7 @@ function Enemy:init(enemy)
     elseif self.enemy == 4 then
         self.width = 60
         self.height = 25
-        self.dx = 100
+        self.dx = 300
         self.texture = gTextures['enemy4']
         self.frame = gFrames['enemy4']
 
@@ -130,7 +130,7 @@ function Enemy:init(enemy)
 
     self.currentAnimation = self.idleAnimation
 
-    
+
 
     self.remove = false
     self.death = false
@@ -202,7 +202,7 @@ end
 
 -- when the character stepped on the enemy
 function Enemy:executeDeath(dt)
-    self.y = self.y + self.dy *  3 * dt
+    self.y = self.y + 100 + self.dy *  3 * dt
     
     if self.y > VIRTUAL_HEIGHT + self.height + 5 then
         self.remove = true

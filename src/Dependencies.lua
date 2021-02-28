@@ -14,7 +14,10 @@ require 'src/Animation'
 -- assets
 
 require 'src/Util'
+
 require 'src/Character'
+require 'src/states/playerstates/PlayerJetpack'
+
 require 'src/Platform'
 require 'src/Enemy'
 
@@ -22,6 +25,9 @@ require 'src/Enemy'
 -- powerups
 require 'src/Spring'
 require 'src/Shield'
+require 'src/Jetpack'
+
+require 'src/Bullet'
 
 
 
@@ -121,13 +127,17 @@ gTextures = {
     ['shield'] = love.graphics.newImage('graphics/Powerup/shield.png'),
 
 
+    ['sprites'] = love.graphics.newImage('graphics/Character/SpriteSheet.png'),
+    ['bullet'] = love.graphics.newImage('graphics/extras/bullet.png'),
 
     ['hstable'] = love.graphics.newImage('graphics/hstable.png')
 }
 
 
 gFrames = {
-    ['boy'] = GenerateQuads(gTextures['character'], 63, 44),
+    -- ['boy'] = GenerateQuads(gTextures['character'], 63, 44)
+    ['boy'] = GenerateSpriteQuads(gTextures['sprites']),
+
     ['shoot'] = GenerateQuads(gTextures['character-gun'], 63, 44),
     ['platforms'] = GenerateQuads(gTextures['platforms'], 16, 48),
     ['enemy1'] = GenerateQuads(gTextures['enemy1'], 32, 32),
@@ -145,5 +155,19 @@ gFrames = {
 gSounds = {
     ['bgMenu'] = love.audio.newSource('bgmusics/menubg.mp3', 'static'),
     ['bgCity'] = love.audio.newSource('bgmusics/citybg.mp3', 'static'),
-    ['bgSpace'] = love.audio.newSource('bgmusics/spacebg.mp3', 'static')
+    ['bgSpace'] = love.audio.newSource('bgmusics/spacebg.mp3', 'static'),
+
+    ['jump'] = love.audio.newSource('Sounds/jump.wav', 'static'),
+    ['fall'] = love.audio.newSource('Sounds/fall.mp3', 'static'),
+    ['hit'] = love.audio.newSource('Sounds/hit.wav', 'static'),
+
+    ['alien'] = love.audio.newSource('Sounds/alien.wav', 'static'),
+    ['jet'] = love.audio.newSource('Sounds/jet.wav', 'static'),
+    ['rocket'] = love.audio.newSource('Sounds/rocket.wav', 'static'),
+
+    ['shoot'] = love.audio.newSource('Sounds/watergun.wav', 'static'),
+    ['shield'] = love.audio.newSource('Sounds/shield.wav', 'static'),
+    ['spring'] = love.audio.newSource('Sounds/spring.wav', 'static'),
+
+    ['button'] = love.audio.newSource('Sounds/score.wav', 'static')
 }

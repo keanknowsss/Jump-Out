@@ -7,8 +7,8 @@ function Spring:init(x, y)
     self.x = x
     self.y = y
 
-    self.height = 16
-    self.width = 16
+    self.height = 32
+    self.width = 32
 
     self.dy = 100
 

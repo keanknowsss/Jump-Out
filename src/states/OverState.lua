@@ -17,10 +17,13 @@ function OverState:update(dt)
     bgMenuScroll = (bgMenuScroll + bgMenuScroll_Speed * dt) % bgMenuLooping
 
     if Button_click(40,200,100,10) and  love.mouse.wasPressed(1) then
+        gSounds['button']:play()
         gStateMachine:change('play',{highScores = self.highScores})
     elseif Button_click(350,200,40,10) and  love.mouse.wasPressed(1) then
+        gSounds['button']:play()
         gStateMachine:change('menu',{highScores = self.highScores})
     elseif Button_click(130,100,140,20) and  love.mouse.wasPressed(1) then
+        gSounds['button']:play()
         show = true
     end
 
@@ -31,6 +34,7 @@ function OverState:update(dt)
     end
 
     if love.keyboard.wasPressed('escape') then
+        gSounds['button']:play()
         gStateMachine:change('menu',{highScores = self.highScores})
     elseif love.keyboard.wasPressed('backspace') then
         if show == true then
@@ -40,6 +44,7 @@ function OverState:update(dt)
             end
         end
     elseif love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
+        gSounds['button']:play()
         local name = txt
         local score = self.score
         for i = 10, self.scoreIndex, -1 do

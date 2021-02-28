@@ -7,10 +7,12 @@ end
 function CreditState:update(dt)
     bgMenuScroll = (bgMenuScroll + bgMenuScroll_Speed * dt) % bgMenuLooping
     if love.keyboard.wasPressed('escape') then
+        gSounds['button']:play()
         gStateMachine:change('menu',{highScores = self.highScores})
     end
     
     if Button_click(380,200,40,10) and  love.mouse.wasPressed(1) then
+        gSounds['button']:play()
         gStateMachine:change('menu',{highScores = self.highScores})
     end
 end

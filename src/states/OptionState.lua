@@ -9,29 +9,55 @@ function OptionState:init()
 end
 
 function OptionState:update(dt)
+    if not sounds  then
+        gSounds['button']:stop()
+        gSounds['jump']:stop()
+        gSounds['fall']:stop()
+
+        gSounds['hit']:stop()
+        gSounds['alien']:stop()
+        gSounds['jet']:stop()
+
+        gSounds['rocket']:stop()
+        gSounds['shoot']:stop()
+        gSounds['shield']:stop()
+        gSounds['spring']:stop()
+    end
+    
    bgMenuScroll = (bgMenuScroll + bgMenuScroll_Speed * dt) % bgMenuLooping
 
     if love.keyboard.wasPressed('escape') then
+        gSounds['button']:play()
         gStateMachine:change('menu',{highScores = self.highScores})
     end
     if Button_click(380,200,40,10) and  love.mouse.wasPressed(1) then
+        gSounds['button']:play()
         gStateMachine:change('menu',{highScores = self.highScores})
     elseif Button_click(300,71,20,10) and  love.mouse.wasPressed(1) then --on1
+        gSounds['button']:play()
         direcshooting = true
     elseif Button_click(300,101,20,10) and  love.mouse.wasPressed(1) then --on2
+        gSounds['button']:play()
         sounds = true
     elseif Button_click(300,131,20,10) and  love.mouse.wasPressed(1) then --on3
+        gSounds['button']:play()
         gSounds['bgMenu']:play()
         music = true
     elseif Button_click(350,71,30,10) and  love.mouse.wasPressed(1) then --off1
+        gSounds['button']:play()
         direcshooting = false
     elseif Button_click(350,101,30,10) and  love.mouse.wasPressed(1) then --off2
+        gSounds['button']:play()
         sounds = false
     elseif Button_click(350,131,30,10) and  love.mouse.wasPressed(1) then --off3
+        gSounds['button']:play()
         gSounds['bgMenu']:stop()
         music = false
     end
 
+
+
+    
 end
 
 function OptionState:render()

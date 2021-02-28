@@ -33,3 +33,27 @@ function table.slice(tbl, first, last, step)
 
     return sliced
 end
+
+
+
+function GenerateSpriteQuads(atlas)
+    
+    local spritesheet = {}
+
+
+    for x = 1, 12, 1 do
+        table.insert(spritesheet, love.graphics.newQuad((x-1)*44, 0, 43, 63, atlas:getDimensions()))
+    end
+    
+
+    for x = 1, 9, 1 do
+        table.insert(spritesheet, love.graphics.newQuad((x-1)*44, 63, 43,63, atlas:getDimensions()))
+    end
+
+
+    for x = 1, 5, 1 do
+        table.insert(spritesheet, love.graphics.newQuad((x-1)*52, 126, 52, 63, atlas:getDimensions()))
+    end
+
+    return spritesheet
+end

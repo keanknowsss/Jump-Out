@@ -5,8 +5,10 @@ function PauseState:update(dt)
         gStateMachine:change('menu')
     end
      if Button_click(350,100,60,10) and  love.mouse.wasPressed(1) then
+        gSounds['button']:play()
         gStateMachine:change('play')
     elseif Button_click(350,150,40,10) and  love.mouse.wasPressed(1) then
+        gSounds['button']:play()
         gStateMachine:change('menu')
     end
 

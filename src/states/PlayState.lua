@@ -11,6 +11,7 @@ end
 function PlayState:init()
     -- instantiate the character
     self.character = Character()
+    self.character.inGame = true
 
     -- type of platform to be rendered
     self.platformType = 1
@@ -28,7 +29,15 @@ function PlayState:init()
 
     -- self.spring = {}
     self.springPowerup = false
+    self.shieldPowerup = false
+    self.jetpackPowerup = false
 
+    self.playerJetpack = PlayerJetpack(0,0)
+
+
+    self.bubbleX = 0
+    self.bubbleY = 0
+    self.bubble = {bubbleOpacity = 180}
 
     -- variables for the background scrolling
     self.bgScrollY = -2157
@@ -36,7 +45,7 @@ function PlayState:init()
     self.bgCounter = 1
 
     -- spacing for the platform
-    self.spacing = -40
+    self.spacing = -50
 
     -- the variables are shifted due to the inverse scaling
     self.character.x = math.floor(self.character.x) + self.character.width
@@ -62,11 +71,14 @@ end
 
 
 function PlayState:update(dt)
+    Timer.update(dt)
 
     -- PAUSE FEATURE
     if love.paused then
         --gSounds['bgCity']:pause()
         if  Button_click(350,100,60,10) and  love.mouse.wasPressed(1) then
+            gSounds['button']:play()
+
             if music then
                 gSounds['bgMenu']:stop()
                 gSounds['bgCity']:play()
@@ -75,6 +87,8 @@ function PlayState:update(dt)
             end
             love.paused = false
         elseif Button_click(350,150,40,10) and  love.mouse.wasPressed(1) then
+            gSounds['button']:play()
+
             if music then
                 gSounds['bgCity']:stop()
                 gSounds['bgMenu']:setLooping(true)
@@ -88,6 +102,7 @@ function PlayState:update(dt)
         end
     else
         if Button_click(390,5,25,8) and  love.mouse.wasPressed(1) then
+            gSounds['button']:play()
             gSounds['bgCity']:pause()
             love.paused = true
         end 
@@ -95,13 +110,13 @@ function PlayState:update(dt)
 
     
     if love.keyboard.wasPressed('escape') then
-        if music then
+            gSounds['button']:play()
+
             gSounds['bgCity']:stop()
             gSounds['bgMenu']:setLooping(true)
             gSounds['bgMenu']:play()
-        else
-            gSounds['bgMenu']:stop()
-        end
+            -- gSounds['bgMenu']:stop()
+        -- end
         gStateMachine:change('menu',{highScores = self.highScores})
     end
 
@@ -113,42 +128,17 @@ function PlayState:update(dt)
     end
 
 
+
     self.character:update(dt)
 
     -- ENEMY SPAWN
-    if self.score >= 1500 and self:chance() then
+    if self.score >= 1500 and self:chance20() then
         self.createEnemy = true
         self:spawnEnemy()
     end
 
-    -- ENEMY DEATH
-    -- triggers the death for the enemy when stepped on by the character
-    if self.enemy then
-        for k, enemy in pairs(self.enemy) do
 
-            if enemy.death then
-                self.dy = 100
-                enemy:executeDeath(dt)
-            end
-
-            if self.character.dy > 0 then
-                if enemy.enemy == 4 then
-                    if self.character:collidesJet(enemy) then
-                        enemy.death = true
-                        self.character.dy = 0
-                        self.character.y = enemy.y - 65 + self.character.height + 10
-                    end
-                else
-                    if self.character:collides(enemy) then
-                        enemy.death = true
-                        self.character.dy = 0
-                        self.character.y = enemy.y - 65 + self.character.height + 10
-                    end
-                end
-            end
-        end
-    end
-
+    --POWERUPS
 
     -- spring update
     -- and if not active return back to previous variables    
@@ -165,6 +155,7 @@ function PlayState:update(dt)
             self.springPowerup = false
             self.character.jumpSpeed = -205
             self.bgScroller = 10
+            self.character.speed = 130
 
 
             for k, platform in pairs(self.platforms) do
@@ -172,11 +163,133 @@ function PlayState:update(dt)
                     platform.spring.dy = 100
                     platform.spring.currentAnimation = platform.spring.idleAnimation    
                 end
+
+                if platform.shield then
+                    platform.shield.dy = 100
+                end
                 platform.dy = 100
             end
         end
+    end
 
 
+    for k, platforms in pairs(self.platforms) do
+        -- SHIELD
+        if platforms.shield then
+            if self.character:collidesPowerup2(platforms.shield) then
+                if self.shieldPowerup then
+                    self.shieldPowerup = true
+
+
+                else
+                    Timer.clear()
+                    self.shieldPowerup = true
+
+                    gSounds['shield']:stop()
+                    gSounds['shield']:play()
+
+                end
+
+                platforms.shield = nil
+            end
+        end
+
+        if platforms.jetpack then
+            if self.character:collidesPowerup2(platforms.jetpack) then
+                if not self.jetpackPowerup then
+                    gSounds['rocket']:stop()
+                    gSounds['rocket']:play()
+
+                    self.jetpackPowerup = true
+                    Timer.clear()
+                    self.playerJetpack = PlayerJetpack(self.character.x, self.character.y)
+                else
+
+
+                    self.jetpackPowerup = true
+                end
+                platforms.jetpack = nil    
+            end
+        end
+    end
+
+    -- BUBBLE COORDINATES -- 
+    -- moves with respect to the player
+    self.bubbleX = self.character.x - self.character.width - 14
+    self.bubbleY = self.character.y - self.character.height - 4
+
+
+    --TWEEN ANIMATION FOR THE SHIELD
+    if self.shieldPowerup then
+
+            Timer.after(3, function()
+            Timer.tween(2,
+                {[self.bubble] = {bubbleOpacity = 220}
+            }):finish(function()
+                Timer.tween(3, {
+                    [self.bubble] = {bubbleOpacity = 20}
+                }):finish(function()
+                        self.shieldPowerup = false
+                        self.bubble.bubbleOpacity = 180
+                end)                
+            end)
+        end)
+
+    end
+
+
+
+    -- JETPACK
+    if self.jetpackPowerup then
+        gSounds['jump']:stop()
+        gSounds['shoot']:stop()
+
+        Timer.after(3, function()
+            self.jetpackPowerup = false
+
+            for h, platformDy in pairs(self.platforms) do
+                platformDy.dy = 100
+    
+                if platformDy.spring then
+                    platformDy.spring.dy = 100 
+                end
+    
+                if platformDy.shield then
+                    platformDy.shield.dy = 100
+                end
+    
+                if platformDy.jetpack then
+                    platformDy.jetpack.dy = 100
+                end
+            end
+            self.bgScroller = 10
+
+            self.playerJetpack = nil
+
+        end)
+        
+        self.playerJetpack:update(dt)
+        self.character.x = self.playerJetpack.x 
+        self.character.y = self.playerJetpack.y
+
+        
+        for h, platformDy in pairs(self.platforms) do
+            platformDy.dy = 400
+
+            if platformDy.spring then
+                platformDy.spring.dy = 400 
+            end
+
+            if platformDy.shield then
+                platformDy.shield.dy = 400
+            end
+
+            if platformDy.jetpack then
+                platformDy.jetpack.dy = 400
+            end
+        end
+        self.bgScroller = 100
+    -- else
     end
 
 
@@ -197,10 +310,17 @@ function PlayState:update(dt)
                 if platforms.spring then
                     -- modifiesall variables
                     if self.character:collidesPowerup(platforms.spring) then
+                        gSounds['jump']:stop()
+                        gSounds['spring']:stop()
+                        gSounds['spring']:play()
+                        gSounds['jump']:play()
+
+
                         self.springPowerup = true             
                         self.character.dy = 0
                         self.character.y = platforms.spring.y - 65 + self.character.height + 5
                         self.character.jumpSpeed = -300
+                        self.character.speed = 300
                         platforms.spring.currentAnimation = platforms.spring.activatedAnimation
     
                         for h, platformDy in pairs(self.platforms) do
@@ -208,6 +328,14 @@ function PlayState:update(dt)
 
                             if platformDy.spring then
                                 platformDy.spring.dy = 300 
+                            end
+
+                            if platformDy.shield then
+                                platformDy.shield.dy = 300
+                            end
+
+                            if platformDy.jetpack then
+                                platformDy.jetpack.dy = 300
                             end
                         end
                         self.bgScroller = 60
@@ -217,6 +345,7 @@ function PlayState:update(dt)
                 -- collide function is different here because the shape was inverted
                 if platforms.platform == 8 and platforms.scaleX < 0 then
                     if self.character:collidesInvertPlat(platforms) then
+
                         if self.character.y > platforms.y - 65 + self.character.height  then
                             self.character.dy = 0
                             self.character.y = platforms.y - 65 + self.character.height + 5
@@ -226,6 +355,8 @@ function PlayState:update(dt)
                 -- for the rest of the platforms
                 else
                     if self.character:collidesPlatform(platforms) then
+
+
                     -- changes the y postition and variable when collided with a block
                         if self.character.y > platforms.y - 65 + self.character.height  then
                             self.character.dy = 0
@@ -256,6 +387,7 @@ function PlayState:update(dt)
 
 
             platforms:horizontalMove(dt)
+
         end
     
         
@@ -272,6 +404,65 @@ function PlayState:update(dt)
 
     end
 
+
+    -- ENEMY DEATH
+    -- triggers the death for the enemy when stepped on by the character
+    if self.enemy then
+        for k, enemy in pairs(self.enemy) do
+            if enemy.enemy == 4 then
+                gSounds['jet']:play()
+            else
+                gSounds['alien']:play()
+            end
+
+            if enemy.death then
+                self.dy = 100
+                enemy:executeDeath(dt)
+            end
+
+            if self.character.dy > 0 then
+                if enemy.enemy == 4 then
+                    if self.character:collidesJet(enemy) then
+                        gSounds['hit']:stop()
+                        gSounds['hit']:play()
+
+                        gSounds['jump']:stop()
+                        gSounds['jump']:play()
+
+                        enemy.death = true
+                        self.character.dy = 0
+                        self.character.y = enemy.y - 65 + self.character.height + 10
+                    end
+                else
+                    if self.character:collides(enemy) then
+                        gSounds['hit']:stop()
+                        gSounds['hit']:play()
+
+                        gSounds['jump']:stop()
+                        gSounds['jump']:play()
+
+                        enemy.death = true
+                        self.character.dy = 0
+                        self.character.y = enemy.y - 65 + self.character.height + 10
+                    end
+                end
+            end
+
+            if self.character.bullet then
+                for k, bullet in pairs(self.character.bullet) do
+                    if bullet:collides(enemy) then
+                        gSounds['hit']:stop()
+                        gSounds['hit']:play()
+
+                        enemy.death = true
+                        enemy.remove = true
+                        bullet.remove = true
+                    end
+                end
+            end
+        end
+    end
+
     -- removes the enemy
     if self.enemy then
         for k, enemy in pairs(self.enemy) do
@@ -281,7 +472,13 @@ function PlayState:update(dt)
         end
     end
 
-
+    if self.character.bullet then
+        for k, bullet in pairs(self.character.bullet) do
+            if bullet.remove then
+                table.remove(self.character.bullet, k)
+            end
+        end
+    end
 
 
 
@@ -299,24 +496,31 @@ function PlayState:update(dt)
         if self.character.y > VIRTUAL_HEIGHT  then 
             self.bgScrollY = math.max(-2157, self.bgScrollY - 200 - VIRTUAL_HEIGHT)
             self:deathVariables(dt)
+            gSounds['fall']:play()
 
         elseif self.enemy then
-            for k, enemy in pairs(self.enemy) do
-                enemy:moveToSide(dt)
-                enemy:animation(dt)
-
-                if self.character.dy < 0 then
-                    if enemy.enemy == 4 then
-                        if self.character:collidesJet(enemy) then
-                            self:deathVariables(dt)
-                        end
-                    else 
-                        if self.character:collides(enemy) then
-                            self:deathVariables(dt)
+            if not self.jetpackPowerup then
+                for k, enemy in pairs(self.enemy) do
+                    enemy:moveToSide(dt)
+                    enemy:animation(dt)
+    
+                    if self.character.dy < 0 and not self.shieldPowerup then
+                        if enemy.enemy == 4 then
+                            if self.character:collidesJet(enemy) then
+                                self:deathVariables(dt)
+                                gSounds['fall']:play()
+                                
+                            end
+                        else 
+                            if self.character:collides(enemy) then
+                                self:deathVariables(dt)
+                                gSounds['fall']:play()
+                            end
                         end
                     end
                 end
             end
+
         end     
     else
         if self.character.y > VIRTUAL_HEIGHT + self.character.height then
@@ -376,7 +580,6 @@ function PlayState:update(dt)
 
 
 
-
 end
 
 
@@ -411,14 +614,28 @@ function PlayState:render()
 
 
     -- player
-    self.character:render()
 
+    if self.jetpackPowerup then
+        self.playerJetpack:render()    
+    else
+        self.character:render()
+    end
+
+    if self.shieldPowerup then
+        love.graphics.setColor(1,1,1,self.bubble.bubbleOpacity/255)
+        love.graphics.draw(gTextures['bubble'], self.bubbleX, self.bubbleY)
+        love.graphics.setColor(1,1,1,1)
+    end
     
 
     love.graphics.draw(gTextures['pscore'],5,15)
     love.graphics.print(tostring(self.score), 55, 20)
 
     if love.paused then
+        love.graphics.setColor(0/255, 0/255, 0/255, 155/255)
+        love.graphics.rectangle('fill', 0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
+        love.graphics.setColor(1,1,1,1)
+
         Button_draw(16)
         Button_draw(17)
         love.graphics.draw(gTextures['paused'],130,5)
@@ -461,9 +678,8 @@ function PlayState:initializePlatforms()
     -- only allows a specific number of platforms to be rendered
     while #self.platforms < 6 do
         -- the gap between each blocks
-
         -- passes only entry level variables for the platform
-        table.insert(self.platforms, Platform(self.platformlastX, self.platformY, 1))
+        table.insert(self.platforms, Platform(self.platformlastX, self.platformY, 1, 100, math.random(2)))
 
         -- Variables increases 
         self.platformY =  math.max(-5, self.platformY + self.spacing)
@@ -487,37 +703,33 @@ function PlayState:createNewPlatforms()
     if self.bgCounter == 1 then
         self.platformType = 1
 
-        if self:chance2() then
+        if self:chance5() then
             self.platformType = 5
         end
 
     elseif self.bgCounter == 2 then
         self.platformType = 1
 
-        if self:chance() then
-            self.platformType = 5
-        end
 
-        if self:chance2() then
-            self.platform = math.random(2) == 1 and 2 or 3
-        end
+        if self:chance5() then
+            self.platformType = math.random(2) == 1 and 2 or 3
+        
 
-        if self:chance3() then
-            self.platform = 4
+        elseif self:chance5() then
+            self.platformType = 4
         end
-
     else
         self.platformType = 5
 
-        if self:chance2() then
+        if self:chance10() then
             self.platformType = 6
-        end
+        
 
-        if self:chance3() then
+        elseif self:chance5() then
             self.platformType = 7
-        end
+        
 
-        if self:chance() then
+        elseif self:chance8() then
             self.platformType = 8
         end
     end
@@ -532,7 +744,7 @@ function PlayState:createNewPlatforms()
 
 
     -- create new platforms
-    table.insert(self.platforms, Platform(self.platformlastX, self.platformY, self.platformType, tempDy))
+    table.insert(self.platforms, Platform(self.platformlastX, self.platformY,self.platformType, tempDy, math.random(3)))
 
 end
 
@@ -546,8 +758,29 @@ function PlayState:spawnEnemy()
 end
 
 
-function PlayState:chance()
+function PlayState:chance5()
     -- self made chance for a decision making 
+    local in1 = math.random(5)
+
+    return in1 == 1
+end
+
+
+
+function PlayState:chance10()
+    local in1 = math.random(10)
+    
+    return in1 == 1
+end
+
+
+function PlayState:chance8()
+    local in1 = math.random(8)
+    
+    return in1 == 1
+end
+
+function PlayState:chance20()
     local in1 = math.random(20)
     local in2 = math.random(20)
     if in1 == 1 then
@@ -555,34 +788,6 @@ function PlayState:chance()
             return true
         end
     end
-
-    return false
-end
-
-
-function PlayState:chance2()
-    local in1 = math.random(10)
-    
-    if in1 == 1 then
-        return true
-    end
-
-    return false
-end
-
-
-function PlayState:chance3()
-    local in1 = math.random(20)
-    local in2 = math.random(10)
-    
-    
-    if in1 == 1 then
-        if in2 == 2 then
-            return true
-        end
-    end
-
-    return false
 end
 
 
