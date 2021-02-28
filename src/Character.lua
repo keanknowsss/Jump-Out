@@ -16,7 +16,7 @@ function Character:init()
 
     self.inGame = false
     -- for the x velocity
-    self.speed = 150
+    self.speed = 130
 
     -- for the y velocity
     self.jumpSpeed = -205
@@ -67,7 +67,6 @@ function Character:update(dt)
         
     -- temporary scoring at the beginning of the game
     if self.dy == 0 then                        
-        gSounds['jump']:stop()
         gSounds['jump']:play()
         self.scoreCounterY2 = self.y
         if self.scoreCounterY2 > self.scoreCounterY1 then

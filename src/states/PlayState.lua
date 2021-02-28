@@ -27,7 +27,6 @@ function PlayState:init()
     self.score = 0 
 
 
-    -- self.spring = {}
     self.springPowerup = false
     self.shieldPowerup = false
     self.jetpackPowerup = false
@@ -125,7 +124,7 @@ function PlayState:update(dt)
     self.character:update(dt)
 
     -- ENEMY SPAWN
-    if self.score >= 1500 and self:chance20() then
+    if self.score >= 2000 and self:chance20() then
         self.createEnemy = true
         self:spawnEnemy()
     end
@@ -591,7 +590,7 @@ function PlayState:update(dt)
 
     -- continously creating new platforms when is less than 6
     if not self.dead then
-        if #self.platforms < 6 then--self.difficultyPLATFORMS then
+        if #self.platforms < 6 then
             self:createNewPlatforms()        
         end
     end

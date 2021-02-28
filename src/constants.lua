@@ -11,6 +11,4 @@ bgMenuScroll_Speed = 40
 bgMenuLooping = 1624
 
 
-CAMERA_SCROLL_SPEED = 40
-
 GRAVITY = 7

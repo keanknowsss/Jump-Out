@@ -19,9 +19,6 @@ function OptionState:update(dt)
     if Button_click(380,200,40,10) and  love.mouse.wasPressed(1) then
         gSounds['button']:play()
         gStateMachine:change('menu',{highScores = self.highScores})
-    elseif Button_click(300,71,20,10) and  love.mouse.wasPressed(1) then --on1
-        gSounds['button']:play()
-        direcshooting = true
     elseif Button_click(300,101,20,10) and  love.mouse.wasPressed(1) then --on2
         gSounds['button']:play()
         sounds = true
@@ -29,9 +26,6 @@ function OptionState:update(dt)
         gSounds['button']:play()
         gSounds['bgMenu']:play()
         music = true
-    elseif Button_click(350,71,30,10) and  love.mouse.wasPressed(1) then --off1
-        gSounds['button']:play()
-        direcshooting = false
     elseif Button_click(350,101,30,10) and  love.mouse.wasPressed(1) then --off2
         gSounds['button']:play()
         sounds = false
@@ -49,18 +43,11 @@ end
 function OptionState:render()
     
     love.graphics.draw(gBackgrounds['menubg'], -bgMenuScroll,0)
-    love.graphics.draw(gTextures['dshooting'], 20, 70)
     love.graphics.draw(gTextures['sound'], 20, 100)
     love.graphics.draw(gTextures['music'], 20, 130)
     Button_draw(6)
 
-    if direcshooting == true then
-        love.graphics.draw(gSelect['son'], 299,70)
-        Button_draw(10)
-    else
-        Button_draw(7)
-        love.graphics.draw(gSelect['soff'], 349,70)
-    end
+
     
     if sounds == true then
         love.graphics.draw(gSelect['son'], 299,100)
