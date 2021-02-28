@@ -138,11 +138,7 @@ function PlayState:update(dt)
     end
 
 
-    if self.character.y < VIRTUAL_HEIGHT / 4 then
-        GRAVITY = 170
-    else
-        GRAVITY = 7
-    end
+
     
 
     --POWERUPS
@@ -162,7 +158,7 @@ function PlayState:update(dt)
             self.springPowerup = false
             self.character.jumpSpeed = -205
             self.bgScroller = 10
-            self.character.speed = 130
+            self.character.speed = 150
 
 
             for k, platform in pairs(self.platforms) do
@@ -388,6 +384,39 @@ function PlayState:update(dt)
                 if self.enemy then
                     for k, enemy in pairs(self.enemy) do
                         enemy:update(dt)
+                    end
+                end
+
+                if self.character.y < VIRTUAL_HEIGHT / 4 then
+                    self.bgScroller = 60
+                    platforms.dy = 250
+                    if platforms.spring then
+                        platforms.spring.dy = 250
+                    end
+
+                    if platforms.shield then
+                        platforms.shield.dy = 250
+
+                    end
+
+                    if platforms.jetpack then
+                        platforms.jetpack.dy = 250                    
+                    end
+
+                else
+                    self.bgScroller = 10
+                    platforms.dy = 100
+                    if platforms.spring then
+                        platforms.spring.dy = 100
+                    end
+
+                    if platforms.shield then
+                        platforms.shield.dy = 100
+
+                    end
+
+                    if platforms.jetpack then
+                        platforms.jetpack.dy = 100                    
                     end
                 end
             end

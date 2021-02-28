@@ -9,21 +9,7 @@ function OptionState:init()
 end
 
 function OptionState:update(dt)
-    if not sounds  then
-        gSounds['button']:stop()
-        gSounds['jump']:stop()
-        gSounds['fall']:stop()
 
-        gSounds['hit']:stop()
-        gSounds['alien']:stop()
-        gSounds['jet']:stop()
-
-        gSounds['rocket']:stop()
-        gSounds['shoot']:stop()
-        gSounds['shield']:stop()
-        gSounds['spring']:stop()
-    end
-    
    bgMenuScroll = (bgMenuScroll + bgMenuScroll_Speed * dt) % bgMenuLooping
 
     if love.keyboard.wasPressed('escape') then

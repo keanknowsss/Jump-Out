@@ -16,7 +16,7 @@ function Character:init()
 
     self.inGame = false
     -- for the x velocity
-    self.speed = 130
+    self.speed = 150
 
     -- for the y velocity
     self.jumpSpeed = -205
