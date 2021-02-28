@@ -89,7 +89,7 @@ function love.update(dt)
 
     
     x1,y1 = love.mouse:getPosition()
-    
+
     if not sounds  then
         gSounds['button']:stop()
         gSounds['jump']:stop()
@@ -105,6 +105,12 @@ function love.update(dt)
         gSounds['spring']:stop()
     end
     
+    if not music then
+        gSounds['bgCity']:stop()
+        gSounds['bgMenu']:stop()
+        gSounds['bgSpace']:stop()
+    end
+
         mouseX, mouseY = push:toGame(x1,y1)
 end
 

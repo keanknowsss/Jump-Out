@@ -2,7 +2,7 @@ MenuState = Class{__includes = BaseState}
 
 
 function MenuState:enter(params)
-
+    gSounds['bgCity']:stop()
     gSounds['bgMenu']:play()
     self.highScores = params.highScores
 end

@@ -112,20 +112,13 @@ function PlayState:update(dt)
     if love.keyboard.wasPressed('escape') then
             gSounds['button']:play()
 
-            gSounds['bgCity']:stop()
+            love.audio.stop(gSounds['bgCity'])
             gSounds['bgMenu']:setLooping(true)
             gSounds['bgMenu']:play()
-            -- gSounds['bgMenu']:stop()
         -- end
         gStateMachine:change('menu',{highScores = self.highScores})
     end
 
-    if music then
-        gSounds['bgMenu']:stop()
-        gSounds['bgCity']:play()
-    else
-        gSounds['bgCity']:stop()
-    end
 
 
 
@@ -834,3 +827,5 @@ function PlayState:deathVariables(dt)
     self.character.dy = 100
     self.character.y = -self.character.height + self.character.dy * dt
 end
+
+
