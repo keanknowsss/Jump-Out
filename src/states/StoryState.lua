@@ -41,7 +41,7 @@ end
 function StoryState:update(dt)
     Timer.update(dt)
 
-    if love.keyboard.wasPressed('space') or love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('escape') then
+    if love.keyboard.wasPressed('space') or love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('escape') or love.keyboard.wasPressed('return') then
         gSounds['bgSpace']:stop()
         gStateMachine:change('menu',{highScores = self.highScores})
     end
