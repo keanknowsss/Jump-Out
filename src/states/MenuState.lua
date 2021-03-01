@@ -6,7 +6,6 @@ function MenuState:enter(params)
     gSounds['bgMenu']:play()
     self.highScores = params.highScores
 
-    -- Timer.clear()
 end
 
 
