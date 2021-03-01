@@ -33,6 +33,7 @@ require 'src/Bullet'
 
 -- initiates all State classes
 require 'src/states/BaseState'
+require 'src/states/StoryState'
 require 'src/states/PlayState'
 require 'src/states/MenuState'
 require 'src/states/OptionState'

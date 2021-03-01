@@ -44,9 +44,10 @@ function love.load()
         ['score'] = function() return ScoreState() end,
         ['credit'] = function() return CreditState() end,
         ['over'] = function() return OverState() end,
-        ['gover'] = function() return GOverState() end
+        ['gover'] = function() return GOverState() end,
+        ['story'] = function() return StoryState() end
     }
-    gStateMachine:change('menu',{highScores = loadHighScores()})
+    gStateMachine:change('story',{highScores = loadHighScores()})
 
 
 
@@ -59,9 +60,7 @@ function love.load()
     MASTER_VOLUME = 5
     
 
-    gSounds['bgMenu']:setLooping(true)
     gSounds['bgMenu']:setVolume(MASTER_VOLUME)
-    gSounds['bgMenu']:play()
 
     love.keyboard.keysPressed = {}
     love.mouse.buttons = {}
