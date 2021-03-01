@@ -656,8 +656,8 @@ function PlayState:render()
     end
     
 
-    love.graphics.draw(gTextures['pscore'],5,15)
-    love.graphics.print(tostring(self.score), 55, 20)
+    love.graphics.draw(gTextures['pscore'],5,15, 0, 1.2, 1)
+    love.graphics.printf(tostring(self.score), 0,20, gTextures['pscore']:getWidth()+18, 'right')
 
     if love.paused then
         love.graphics.setColor(0/255, 0/255, 0/255, 155/255)

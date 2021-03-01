@@ -36,7 +36,7 @@ function PlayerJetpack:update(dt)
 
 
     -- game is now using is down keys instead of toggle keys
-    if love.keyboard.isDown('left') then
+    if love.keyboard.isDown('left') or love.keyboard.isDown('a')then
         self.x = self.x - self.speed * dt
 
         self.direction = 'left'
@@ -45,7 +45,7 @@ function PlayerJetpack:update(dt)
             self.x = VIRTUAL_WIDTH + 20
         end
 
-    elseif love.keyboard.isDown('right') then
+    elseif love.keyboard.isDown('right') or love.keyboard.isDown('d') then
         self.x = self.x + self.speed * dt
 
         self.direction = 'right'
